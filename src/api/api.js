@@ -1,17 +1,22 @@
-import axios from 'axios';
+import axios from 'axios'
+// 创建axios实例
+const api = axios.create({
+  withCredentials: true,
+  timeout: 60000
+})
 
-let base = '';
+api.interceptors.request.use(async(config) => {
+  // Do something before request
 
-export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
+  if (config.method === 'post') {
+    config.headers['content-type'] = 'application/json'
+  }
+    
+  return config
+}, (error) => {
+  // Do something with request error
+  return Promise.reject(error)
+})
 
-export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
 
-export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
-
-export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }); };
-
-export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }); };
-
-export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
-
-export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
+export default api
