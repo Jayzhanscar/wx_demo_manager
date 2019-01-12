@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import service from '../api/service.js'
   import { requestLogin } from '../api/api';
   //import NProgress from 'nprogress'
   export default {
@@ -39,7 +40,17 @@
         checked: true
       };
     },
+    created() {
+      this.fetchTest()
+    },
     methods: {
+      fetchTest() {
+        let data = {}
+        const success = data => {
+          //
+        }
+        service.getDepth(data, success)
+      },
       handleReset2() {
         this.$refs.ruleForm2.resetFields();
       },
