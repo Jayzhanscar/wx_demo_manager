@@ -22,7 +22,7 @@ import service from '../api/service.js'
       return {
         logining: false,
         ruleForm2: {
-          account: 'admin',
+          account: '18895309883',
           checkPass: '123456'
         },
         rules2: {
@@ -39,7 +39,7 @@ import service from '../api/service.js'
       };
     },
     created() {
-      this.userLogin()
+      // this.userLogin()
     },
     methods: {
     userLogin() {
@@ -50,6 +50,10 @@ import service from '../api/service.js'
       const success = data => {
         // 缓存登录数据
         // localStorage.setItem('mydata', JSON.stringify(data))
+        localStorage.setItem('user', JSON.stringify(data));
+        sessionStorage.setItem('user', JSON.stringify(data));
+
+        this.$router.push({ path: '/' });
 
       }
       service.login(data, success)
