@@ -17,8 +17,6 @@
 
 <script>
 import service from '../api/service.js'
-  import { requestLogin } from '../api/api';
-  //import NProgress from 'nprogress'
   export default {
     data() {
       return {
@@ -41,30 +39,21 @@ import service from '../api/service.js'
       };
     },
     created() {
-      this.fetchTest()
       this.userLogin()
     },
     methods: {
-      fetchTest() {
-        let data = {}
-        const success = data => {
-          localStorage.setItem('mydata',JSON.stringify(data))
-          //
-        }
-        service.getDepth(data, success)
-      },
-      userLogin(){
-          let data = {
-            'mobile': this.ruleForm2.account,
-            'password': this.ruleForm2.checkPass,
-          }
-          const success = data => {
-          // 缓存登录数据
-          localStorage.setItem('mydata',JSON.stringify(data))
+    userLogin() {
+      let data = {
+        'mobile': this.ruleForm2.account,
+        'password': this.ruleForm2.checkPass,
+      }
+      const success = data => {
+        // 缓存登录数据
+        // localStorage.setItem('mydata', JSON.stringify(data))
 
-        }
-         service.userLogin(data, success)
-      },
+      }
+      service.login(data, success)
+    },
       handleReset2() {
         this.$refs.ruleForm2.resetFields();
       },

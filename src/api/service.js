@@ -13,23 +13,7 @@ let service = {};
 
 
 //获取话题列表
-service.getDepth = (data, success) => {
-  let config = {
-    url: `${meta.api}/info/depth/SWT-CNY/more`,
-    method: 'get',
-    data: data
-  };
-  return api(config)
-    .then((data) => {
-      if (data.status === 200)
-        success(data.data);
-      else
-        console.log(data)
-    })
-    .catch()
-}
-
-service.UserLogin = (data, success) => {
+service.login = (data, success) => {
   let config = {
     url: `${meta.api}/user/api/super/login`,
     method: 'post',
@@ -44,4 +28,5 @@ service.UserLogin = (data, success) => {
     })
     .catch()
 }
+
 export default service
