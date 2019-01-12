@@ -9,7 +9,7 @@
     </el-form-item>
     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
     <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
+      <el-button type="primary" style="width:100%;" @click.native.prevent="userLogin" :loading="logining">登录</el-button>
       <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
     </el-form-item>
   </el-form>
@@ -42,14 +42,28 @@ import service from '../api/service.js'
     },
     created() {
       this.fetchTest()
+      this.userLogin()
     },
     methods: {
       fetchTest() {
         let data = {}
         const success = data => {
+          localStorage.setItem('mydata',JSON.stringify(data))
           //
         }
         service.getDepth(data, success)
+      },
+      userLogin(){
+          let data = {
+            'mobile': this.ruleForm2.account,
+            'password': this.ruleForm2.checkPass,
+          }
+          const success = data => {
+          // 缓存登录数据
+          localStorage.setItem('mydata',JSON.stringify(data))
+
+        }
+         service.userLogin(data, success)
       },
       handleReset2() {
         this.$refs.ruleForm2.resetFields();

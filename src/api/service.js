@@ -29,5 +29,19 @@ service.getDepth = (data, success) => {
     .catch()
 }
 
-
+service.UserLogin = (data, success) => {
+  let config = {
+    url: `${meta.api}/user/api/super/login`,
+    method: 'post',
+    data: data
+  };
+  return api(config)
+    .then((data) => {
+      if (data.status === 200)
+        success(data.data);
+      else
+        console.log(data)
+    })
+    .catch()
+}
 export default service

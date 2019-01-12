@@ -4,7 +4,7 @@ module.exports = {
     DEBUG:debug,
     development: {
         autoOpenBrowser: true,
-        API_PATH:  debug == 'dev' ? 'https://ikj98kyq754c.jccdex.cn' : '',
+        API_PATH:  debug == 'dev' ? 'https://www.ymkgdesign.com' : '',
     },
     version: '1.0.0'
 };
