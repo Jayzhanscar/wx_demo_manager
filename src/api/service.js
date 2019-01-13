@@ -67,4 +67,21 @@ service.createPoster = (data, success) => {
       .catch()
 }
 
+// 上传图片
+service.upLoadImg = (data, success) => {
+  let config = {
+    url: `${meta.api}/goods/api/img/upload`,
+    method: 'post',
+    data: data,
+  };
+  return api(config)
+      .then((data) => {
+        if (data.status === 200)
+          success(data.data);
+        else
+          console.log(data)
+      })
+      .catch()
+}
+
 export default service
