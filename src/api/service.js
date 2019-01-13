@@ -73,7 +73,31 @@ service.upLoadImg = (data, success) => {
     url: `${meta.api}/goods/api/img/upload`,
     method: 'post',
     data: data,
+    dataType: "formData",
+    cache: false,
+    processData: false,
+    contentType: false,
   };
+  return api(config)
+      .then((data) => {
+        if (data.status === 200)
+          success(data.data);
+        else
+          console.log(data)
+      })
+      .catch()
+}
+
+// 用户列表
+service.userList = (data, success, size, page, mobile) => {
+  let config = {
+    url: `${meta.api}/user/api/list/`+'?size='+ size.toString()+ '&page=' + page,
+    method: 'get',
+    data: data,
+  };
+  if (mobile){
+    config.url += '&mobile='+ mobile
+  }
   return api(config)
       .then((data) => {
         if (data.status === 200)

@@ -65,15 +65,10 @@
 					<el-input v-model="editForm.code" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="作者头像">
-					<el-upload
-							action="111"
-							class="upload-demo"
-							>
-						<el-button size="small" type="primary">点击上传</el-button>
-						<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-					</el-upload>
+					<input type="file">
+
 				</el-form-item>
-				<el-form-item label="缩略图"  prop="name">
+				<el-form-item label="缩略图"  prop="name" id="uploadPic">
 					<el-upload
 							class="upload-demo"
 							action="111"
@@ -100,32 +95,27 @@
 				<el-form-item label="标题" prop="name">
 					<el-input v-model="addForm.title" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="作者" prop="name">
+				<el-form-item label="作者" prop="title">
 					<el-input v-model="addForm.creator" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="文件路径" prop="name">
+				<el-form-item label="文件路径" prop="path">
 					<el-input v-model="addForm.path" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="提取码" prop="name">
+				<el-form-item label="提取码" prop="title">
 					<el-input v-model="addForm.code" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="作者头像">
-					<el-upload
-							class="upload-demo"
-							action="https://www.ymkgdesign.com/"
-							>
-						<el-button size="small" type="primary">点击上传</el-button>
-						<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-					</el-upload>
+					<input ref="uploadAvatar" type="file" >
+					<!--<el-upload-->
+							<!--class="upload-demo"-->
+							<!--action="https://www.ymkgdesign.com/"-->
+							<!--&gt;-->
+						<!--<el-button size="small" type="primary">点击上传</el-button>-->
+						<!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+					<!--</el-upload>-->
 				</el-form-item>
-				<el-form-item label="缩略图"  prop="name">
-					<el-upload
-							class="upload-demo"
-							action="https://www.ymkgdesign.com/"
-					>
-						<el-button size="small" type="primary">点击上传</el-button>
-						<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-					</el-upload>
+				<el-form-item label="缩略图">
+					<input ref="uploadPic" type="file" >
 				</el-form-item>
 				<el-form-item label="备注说明" prop="detail">
 					<el-input v-model="addForm.detail" auto-complete="off"></el-input>
@@ -207,7 +197,6 @@
 					this.listLoading = false;
 					this.postList = data['results']
 					this.total = data['count']
-					console.log('-------', this.postList)
 
 				}
 				service.posterList(data, success, size, page, title)
@@ -215,12 +204,37 @@
 			// 分页请求
 			handleCurrentChange(val) {
 				this.page = val;
-				console.log(val, '666666')
 				this.getPostList(val)
 			},
 			// 创建海报
 			createPoster: function() {
-				console.log('test-----', this.addForm)
+				let fileFormData = new FormData()
+
+				let avatar = this.$refs.uploadAvatar.files[0]
+				let pic = this.$refs.uploadPic.files[0]
+				const success = data => {
+					this.addFormVisible = false;
+					console.log('创建成功了', data)
+
+				}
+				fileFormData.append('avatar', avatar,)
+				fileFormData.append('pic', pic, )
+				fileFormData.append('title', this.addForm.title,)
+				fileFormData.append('path', this.addForm.path,)
+				fileFormData.append('code',this.addForm.code,)
+				fileFormData.append('creator',this.addForm.creator,)
+				fileFormData.append('detail',this.addForm.detail,)
+
+				let data = {
+					'title': this.addForm.title,
+					'creator': this.addForm.creator,
+					'path': this.addForm.path,
+					'code': this.addForm.code,
+					'creator_pic': avatar,
+					'pic': pic
+				}
+				service.createPoster(fileFormData, success)
+				console.log('test-----', avatar, pic)
 
 			},
 
