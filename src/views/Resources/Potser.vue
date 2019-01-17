@@ -37,7 +37,7 @@
 			</el-table-column>
 			<el-table-column label="操作" width="150">
 				<template scope="scope">
-					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+					<!--<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
 				</template>
 			</el-table-column>
@@ -92,6 +92,9 @@
 		<!--新增界面-->
 		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
 			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
+				<el-form-item label="uuid" prop="">
+					<el-input v-model="addForm.uuid" auto-complete="off"></el-input>
+				</el-form-item>
 				<el-form-item label="标题" prop="name">
 					<el-input v-model="addForm.title" auto-complete="off"></el-input>
 				</el-form-item>
@@ -137,6 +140,7 @@
 	export default {
 		data() {
 			return {
+				noShow: false,
 				postList: [],
 				filters: {
 					title: ''
@@ -217,7 +221,7 @@
 					console.log('创建成功了', data)
 
 				}
-				fileFormData.append('avatar', avatar,)
+				fileFormData.append('creator_pic', avatar,)
 				fileFormData.append('pic', pic, )
 				fileFormData.append('title', this.addForm.title,)
 				fileFormData.append('path', this.addForm.path,)
@@ -260,24 +264,24 @@
 			// },
 			//删除
 			handleDel: function (index, row) {
-				// this.$confirm('确认删除该记录吗?', '提示', {
-				// 	type: 'warning'
-				// }).then(() => {
-				// 	this.listLoading = true;
-				// 	//NProgress.start();
-				// 	let para = { id: row.id };
-				// 	removeUser(para).then((res) => {
-				// 		this.listLoading = false;
-				// 		//NProgress.done();
-				// 		this.$message({
-				// 			message: '删除成功',
-				// 			type: 'success'
-				// 		});
-				// 		this.getUsers();
-				// 	});
-				// }).catch(() => {
+				this.$confirm('确认删除该记录吗?', '提示', {
+					type: 'warning'
+				}).then(() => {
+					this.listLoading = true;
+					 // NProgress.start();
+					let data = {
+						'ids': [row.uuid, ]
+					}
+					const success = data => {
+						this.listLoading = false;
+						console.log('删除成功了', data)
+
+					}
+					service.deletePoster(data, success())
+
+				}).catch(() => {
 				//
-				// });
+				});
 			},
 			//显示编辑界面
 			handleEdit: function (index, row) {
@@ -344,26 +348,22 @@
 			},
 			//批量删除
 			batchRemove: function () {
-				var ids = this.sels.map(item => item.id).toString();
+				var ids = this.sels.map(item => item.uuid).splice(',');
 				// TODO 批量删
-				// this.$confirm('确认删除选中记录吗？', '提示', {
-				// 	type: 'warning'
-				// }).then(() => {
-				// 	this.listLoading = true;
-				// 	//NProgress.start();
-				// 	let para = { ids: ids };
-				// 	batchRemoveUser(para).then((res) => {
-				// 		this.listLoading = false;
-				// 		//NProgress.done();
-				// 		this.$message({
-				// 			message: '删除成功',
-				// 			type: 'success'
-				// 		});
-				// 		this.getUsers();
-				// 	});
-				// }).catch(() => {
-				//
-				// });
+				this.$confirm('确认删除选中记录吗？', '提示', {
+					type: 'warning'
+				}).then(() => {
+					this.listLoading = true;
+					let data = {
+						'ids': ids
+					}
+					const success = data => {
+						this.listLoading = false;
+						console.log('删除成功了', data)
+					}
+					service.deletePoster(data, success())
+
+				});
 			}
 		},
 		mounted() {

@@ -2,13 +2,18 @@ import Login from './views/Login.vue'
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'
 import Main from './views/Main.vue'
-import Poster from './views/nav1/Potser.vue'
-import Form from './views/nav1/Form.vue'
-import user from './views/nav1/user.vue'
-import Page4 from './views/nav2/Page4.vue'
-import Page5 from './views/nav2/Page5.vue'
+import Poster from './views/Resources/Potser.vue'
+import goodList from './views/Resources/GoodsList.vue'
+import curriculumList from './views/Resources/Curriculum.vue'
+import user from './views/Resources/GoodsClassify.vue'
+import Page4 from './views/order/Page4.vue'
+import Page5 from './views/order/Page5.vue'
 import User from './views/nav3/User.vue'
+import videoList from './views/Resources/videoList'
 import echarts from './views/charts/echarts.vue'
+import assemble from './views/activity/Assemble'
+import bargain from './views/activity/Bargain'
+
 
 let routes = [
     {
@@ -27,13 +32,15 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '商品管理',
+        name: '资源管理',
         iconCls: 'el-icon-message',//图标样式class
         children: [
             // { path: '/main', component: Main, name: '海报管理', hidden: true },
             { path: '/poster', component: Poster, name: '海报管理' },
-            { path: '/user', component: user, name: '商品管理' },
-            { path: '/form', component: Form, name: '添加海报' },
+            { path: '/user', component: user, name: '商品分类' },
+            { path: '/good/list', component: goodList, name: '商品管理' },
+            { path: '/curriculum/list', component: curriculumList, name: '课程管理' },
+            { path: '/video/list', component: videoList, name: '教程视频' },
         ]
     },
     {
@@ -63,6 +70,16 @@ let routes = [
         iconCls: 'fa fa-bar-chart',
         children: [
             { path: '/echarts', component: echarts, name: 'echarts' }
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '活动管理',
+        iconCls: 'el-icon-message',//图标样式class
+        children: [
+            { path: '/bargain', component: bargain, name: '砍价管理' },
+            { path: '/assemble', component: assemble, name: '拼团管理' },
         ]
     },
     {

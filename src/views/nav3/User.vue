@@ -82,6 +82,7 @@
 				const success = data => {
 					console.log('用户列表', data)
 					this.userList = data['results']
+					this.total = data['count']
 
 
 				}
