@@ -279,7 +279,6 @@
       },
       //编辑
       editSubmit: function () {
-
         // this.$refs.editForm.validate((valid) => {
         // 	if (valid) {
         		this.$confirm('确认提交吗？', '提示', {}).then(() => {
@@ -297,9 +296,7 @@
                   fileFormData.append('price', this.editForm.price,);
                   fileFormData.append('detail', this.editForm.detail,);
                   fileFormData.append('classify_id', this.editForm.classify_id,);
-
                   service.updateGoods(this.editForm.uuid, fileFormData, success)
-
         		});
       },
       selsChange: function (sels) {
