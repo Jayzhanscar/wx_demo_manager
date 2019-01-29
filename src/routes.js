@@ -85,11 +85,11 @@ let routes = [
         ]
     },
 
-    {
-        path: '*',
-        hidden: true,
-        redirect: { path: '/404' }
-    }
+    // {
+    //     path: '*',
+    //     hidden: true,
+    //     redirect: { path: '/404' }
+    // }
 ];
 
 export default routes;
