@@ -6,7 +6,6 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(async(config) => {
-  // Do something before request
   // 获取token
   let user = sessionStorage.getItem('user');
   if (user) {

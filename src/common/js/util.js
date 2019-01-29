@@ -6,56 +6,28 @@ function padding(s, len) {
     return s;
 };
 
-export default {
-    getQueryStringByName: function (name) {
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-        var r = window.location.search.substr(1).match(reg);
-        var context = "";
-        if (r != null)
-            context = r[2];
-        reg = null;
-        r = null;
-        return context == null || context == "" || context == "undefined" ? "" : context;
-    },
-    formatDate: {
+// 规范时间
+export function formatDate (date, fmt) {
+       var date = new Date(date)
+       if (/(y+)/.test(fmt)) {
+             fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+           }
+       let o = {
+             'M+': date.getMonth() + 1,
+             'd+': date.getDate(),
+             'h+': date.getHours(),
+             'm+': date.getMinutes(),
+             's+': date.getSeconds()
+       }
+       for (let k in o) {
+             if (new RegExp(`(${k})`).test(fmt)) {
+                   let str = o[k] + ''
+                   fmt = fmt.replace(RegExp.$1, RegExp.$1.length === 1 ? str : padLeftZero(str))
+                 }
+           }
+       return fmt
+     }
 
-
-        format: function (date, pattern) {
-            pattern = pattern || DEFAULT_PATTERN;
-            return pattern.replace(SIGN_REGEXP, function ($0) {
-                switch ($0.charAt(0)) {
-                    case 'y': return padding(date.getFullYear(), $0.length);
-                    case 'M': return padding(date.getMonth() + 1, $0.length);
-                    case 'd': return padding(date.getDate(), $0.length);
-                    case 'w': return date.getDay() + 1;
-                    case 'h': return padding(date.getHours(), $0.length);
-                    case 'm': return padding(date.getMinutes(), $0.length);
-                    case 's': return padding(date.getSeconds(), $0.length);
-                }
-            });
-        },
-        parse: function (dateString, pattern) {
-            var matchs1 = pattern.match(SIGN_REGEXP);
-            var matchs2 = dateString.match(/(\d)+/g);
-            if (matchs1.length == matchs2.length) {
-                var _date = new Date(1970, 0, 1);
-                for (var i = 0; i < matchs1.length; i++) {
-                    var _int = parseInt(matchs2[i]);
-                    var sign = matchs1[i];
-                    switch (sign.charAt(0)) {
-                        case 'y': _date.setFullYear(_int); break;
-                        case 'M': _date.setMonth(_int - 1); break;
-                        case 'd': _date.setDate(_int); break;
-                        case 'h': _date.setHours(_int); break;
-                        case 'm': _date.setMinutes(_int); break;
-                        case 's': _date.setSeconds(_int); break;
-                    }
-                }
-                return _date;
-            }
-            return null;
-        }
-
-    }
-
-};
+function padLeftZero (str) {
+    return ('00' + str).substr(str.length)
+}

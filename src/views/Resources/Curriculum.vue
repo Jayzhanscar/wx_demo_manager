@@ -28,8 +28,6 @@
             </el-table-column>
             <el-table-column prop="pic" label="主图" width="100"  sortable>
             </el-table-column>
-            <!--<el-table-column prop="commit" label="评论数量" width="130" sortable>-->
-            <!--</el-table-column>-->
             <el-table-column prop="price" label="价格(元)" width="120" sortable>
             </el-table-column>
             <el-table-column prop="ispay" label="是否付费" width="120" sortable :formatter="formatPay">
@@ -37,7 +35,7 @@
             <el-table-column prop="sumtime" label="课程总时长" min-width="180" sortable>
             </el-table-column>
             <el-table-column label="操作" width="150">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                 </template>
@@ -56,22 +54,33 @@
                 <el-form-item label="课程名称" prop="name">
                     <el-input v-model="editForm.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="作者" prop="name">
+                <el-form-item label="价格" prop="price">
+                     <el-input v-model="editForm.price" auto-complete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="作者" prop="title">
                     <el-input v-model="editForm.creator" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="作者头像">
-                    <input type="file">
+                    <input ref="updateAvatar" type="file">
+                </el-form-item>
+                <el-form-item label="作者详情">
+                    <el-input v-model="editForm.creator_detail" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="主图">
-                    <input type="file">
+                    <input ref="updatePic" type="file">
+                </el-form-item>
+                <el-form-item label="是否免费">
+                    <template>
+                        <el-radio v-model="editForm.ispay" label="0">免费</el-radio>
+                        <el-radio v-model="editForm.ispay" label="1">付费</el-radio>
+                    </template>
                 </el-form-item>
 
                 <el-form-item label="备注说明" prop="detail">
                     <el-input v-model="editForm.detail" auto-complete="off"></el-input>
                 </el-form-item>
-
             </el-form>
-
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="editFormVisible = false">取消</el-button>
                 <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
@@ -90,7 +99,7 @@
                 <el-form-item label="价格" prop="price">
                     <el-input v-model="addForm.price" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="缩略图" prop="pic">
+                <el-form-item label="主图" prop="pic">
                     <input ref="curriculumPic" type="file" >
                 </el-form-item>
                 <el-form-item label="是否免费">
@@ -149,16 +158,13 @@
                 page: 1,
                 listLoading: false,
                 sels: [],//列表选中列
-
                 editFormVisible: false,//编辑界面是否显示
                 editLoading: false,
                 editFormRules: {
                     name: [
                         { required: true, message: '此项必填', trigger: 'blur' },
                     ],
-
                 },
-
                 addFormVisible: false,//新增界面是否显示
                 addLoading: false,
                 addFormRules: {
@@ -175,7 +181,7 @@
 
            //收费标砖显示转换
             formatPay: function (row, column) {
-            	return row.ispay == 1 ? '收费' : row.ispay == 0 ? '付费' : '未知';
+            	return row.ispay == 1 ? '付费' : row.ispay == 0 ? '免费' : '未知';
             },
             // 获取课程列表
             funcCurriculumList: function (page, name) {
@@ -198,9 +204,6 @@
                 this.page = val;
                 this.funcCurriculumList(val, 0)
             },
-            test: function(){
-                console.log('-----', this.addForm)
-            },
             // 创建课程
             createCurriculum: function() {
                 let fileFormData = new FormData();
@@ -209,7 +212,6 @@
                 let curriculumPic = this.$refs.curriculumPic.files[0];
                 const success = data => {
                     this.addFormVisible = false;
-                    console.log('常见课程成功')
                 };
                 fileFormData.append('pic', curriculumPic,);
                 fileFormData.append('name', this.addForm.name,);
@@ -221,25 +223,6 @@
                 fileFormData.append('creator_avator', creator_avator);
                 service.addCurriculum(fileFormData, success)
             },
-            //
-            // //性别显示转换
-            //
-
-            //获取用户列表
-            // getUsers() {
-            // 	let para = {
-            // 		page: this.page,
-            // 		name: this.filters.name
-            // 	};
-            // 	this.listLoading = true;
-            // 	//NProgress.start();
-            // 	getUserListPage(para).then((res) => {
-            // 		this.total = res.data.total;
-            // 		this.users = res.data.users;
-            // 		this.listLoading = false;
-            // 		//NProgress.done();
-            // 	});
-            // },
             //删除
             handleDel: function (index, row) {
                 this.$confirm('确认删除该记录吗?', '提示', {
@@ -247,16 +230,15 @@
                 }).then(() => {
                 	this.listLoading = true;
                 	//NProgress.start();
-                	let para = { id: row.id };
-                	removeUser(para).then((res) => {
-                		this.listLoading = false;
-                		//NProgress.done();
-                		this.$message({
-                			message: '删除成功',
-                			type: 'success'
-                		});
-                		this.getUsers();
-                	});
+                    let data = {
+                        'uuid': row.uuid
+                    }
+                    console.log(row.uuid, '123456')
+                    const success = data => {
+                          this.listLoading = false;
+                    }
+                    service.deleteCurriculum(data, success)
+
                 }).catch(() => {
 
                 });
@@ -274,56 +256,28 @@
             },
             //编辑
             editSubmit: function () {
-                // TODO 编辑
-                // this.$refs.editForm.validate((valid) => {
-                // 	if (valid) {
-                // 		this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                // 			this.editLoading = true;
-                // 			//NProgress.start();
-                // 			let para = Object.assign({}, this.editForm);
-                // 			para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-                // 			editUser(para).then((res) => {
-                // 				this.editLoading = false;
-                // 				//NProgress.done();
-                // 				this.$message({
-                // 					message: '提交成功',
-                // 					type: 'success'
-                // 				});
-                // 				this.$refs['editForm'].resetFields();
-                // 				this.editFormVisible = false;
-                // 				this.getUsers();
-                // 			});
-                // 		});
-                // 	}
-                // });
+                this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                    this.editLoading = true;
+                    let creator_avator = this.$refs.updateAvatar.files[0];
+                    let curriculumPic = this.$refs.updatePic.files[0];
+                    let data = new FormData()
+                    data.append('name', this.editForm.name,)
+                    data.append('price', this.editForm.price)
+                    data.append('creator', this.editForm.creator)
+                    data.append('ispay',this.editForm.ispay,)
+                    data.append('creator_detail',this.editForm.creator_detail,)
+                    data.append('pic', curriculumPic,);
+                    data.append('creator_avator', creator_avator);
+                    const success = data => {
+                        this.editLoading = false;
+                        this.editFormVisible = false;
+                    }
+                    service.updateCurriculum( this.editForm.uuid, data, success)
+                });
             },
-            //新增
-            // addSubmit: function () {
-            // 	this.$refs.addForm.validate((valid) => {
-            // 		if (valid) {
-            // 			this.$confirm('确认提交吗？', '提示', {}).then(() => {
-            // 				this.addLoading = true;
-            // 				//NProgress.start();
-            // 				let para = Object.assign({}, this.addForm);
-            // 				para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-            // 				addUser(para).then((res) => {
-            // 					this.addLoading = false;
-            // 					//NProgress.done();
-            // 					this.$message({
-            // 						message: '提交成功',
-            // 						type: 'success'
-            // 					});
-            // 					this.$refs['addForm'].resetFields();
-            // 					this.addFormVisible = false;
-            // 					this.getUsers();
-            // 				});
-            // 			});
-            // 		}
-            // 	});
-            // },
             selsChange: function (sels) {
                 this.sels = sels;
-                // TODO 获取批量id
+                // 获取批量id
             },
             //批量删除
             batchRemove: function () {

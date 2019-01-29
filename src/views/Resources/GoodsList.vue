@@ -34,10 +34,10 @@
       </el-table-column>
       <el-table-column prop="picdetail" label="详情图" width="120" sortable>
       </el-table-column>
-      <el-table-column prop="create_time" label="创建时间" min-width="180" sortable>
+      <el-table-column prop="create_time" label="创建时间" min-width="180" :formatter="formatData" sortable>
       </el-table-column>
       <el-table-column label="操作" width="150">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
         </template>
@@ -53,32 +53,30 @@
     <!--编辑界面-->
     <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="addForm">
-        <el-form-item label="标题" prop="name">
-          <el-input v-model="editForm.title" auto-complete="off"></el-input>
+        <el-form-item label="商品名" prop="name">
+          <el-input v-model="editForm.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="作者" prop="name">
-          <el-input v-model="editForm.creator" auto-complete="off"></el-input>
+        <el-form-item label="售价" prop="price">
+          <el-input v-model="editForm.price" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="文件路径" prop="name">
-          <el-input v-model="editForm.path" auto-complete="off"></el-input>
+        <el-form-item label="主图" prop="pic">
+          <input ref="updateGoodsPic" type="file" >
         </el-form-item>
-        <el-form-item label="提取码" prop="name">
-          <el-input v-model="editForm.code" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="作者头像">
-          <input type="file">
+        <el-form-item label="类别">
+          <el-select v-model="editForm.classify_id" placeholder="请选择">
+            <el-option
+                    v-for="item in classifyOptions"
+                    :key="item.classify_id"
+                    :label="item.name"
+                    :value="item.classify_id">
+            </el-option>
+          </el-select>
 
         </el-form-item>
-        <el-form-item label="缩略图"  prop="name" id="uploadPic">
-          <el-upload
-                  class="upload-demo"
-                  action="111"
-          >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-          </el-upload>
+        <el-form-item label="详情图">
+          <input ref="updatePicDetail" type="file" >
         </el-form-item>
-        <el-form-item label="备注说明" prop="detail">
+        <el-form-item label="详情" prop="detail">
           <el-input v-model="editForm.detail" auto-complete="off"></el-input>
         </el-form-item>
 
@@ -130,7 +128,7 @@
 </template>
 
 <script>
-  import util from '../../common/js/util'
+  import {formatDate} from '../../common/js/util'
   import service from '../../api/service.js'
 
   export default {
@@ -189,6 +187,10 @@
       this.funcGoodsList(1, 0);
     },
     methods: {
+      //时间显示转换
+      formatData: function (row, column) {
+        return formatDate(row.create_time, 'yyyy-MM-dd hh:mm')
+      },
       // 获取商品列表
       funcGoodsList: function (page, name) {
         let size = 10
@@ -228,25 +230,6 @@
         service.addGoods(fileFormData, success)
       },
 
-      //
-      // //性别显示转换
-      //
-
-      //获取用户列表
-      // getUsers() {
-      // 	let para = {
-      // 		page: this.page,
-      // 		name: this.filters.name
-      // 	};
-      // 	this.listLoading = true;
-      // 	//NProgress.start();
-      // 	getUserListPage(para).then((res) => {
-      // 		this.total = res.data.total;
-      // 		this.users = res.data.users;
-      // 		this.listLoading = false;
-      // 		//NProgress.done();
-      // 	});
-      // },
       //删除
       handleDel: function (index, row) {
         // this.$confirm('确认删除该记录吗?', '提示', {
@@ -272,6 +255,14 @@
       handleEdit: function (index, row) {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
+        let data = {}
+        const success = data => {
+          this.listLoading = false;
+          this.classifyOptions = data
+          this.total = data['count']
+
+        }
+        service.ClassifyList(data, success)
       },
       //显示新增界面
       handleAdd: function () {
@@ -288,53 +279,29 @@
       },
       //编辑
       editSubmit: function () {
-        // TODO 编辑
+
         // this.$refs.editForm.validate((valid) => {
         // 	if (valid) {
-        // 		this.$confirm('确认提交吗？', '提示', {}).then(() => {
-        // 			this.editLoading = true;
-        // 			//NProgress.start();
-        // 			let para = Object.assign({}, this.editForm);
-        // 			para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-        // 			editUser(para).then((res) => {
-        // 				this.editLoading = false;
-        // 				//NProgress.done();
-        // 				this.$message({
-        // 					message: '提交成功',
-        // 					type: 'success'
-        // 				});
-        // 				this.$refs['editForm'].resetFields();
-        // 				this.editFormVisible = false;
-        // 				this.getUsers();
-        // 			});
-        // 		});
-        // 	}
-        // });
+        		this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                  this.editLoading = true;
+                  //NProgress.start();
+                  const success = data => {
+                    this.editLoading = false;
+                  };
+                  let pic = this.$refs.updateGoodsPic.files[0];
+                  let picdetail = this.$refs.updatePicDetail.files[0];
+                  let fileFormData = new FormData()
+                  fileFormData.append('pic', pic,);
+                  fileFormData.append('picdetail', picdetail,);
+                  fileFormData.append('name', this.editForm.name,);
+                  fileFormData.append('price', this.editForm.price,);
+                  fileFormData.append('detail', this.editForm.detail,);
+                  fileFormData.append('classify_id', this.editForm.classify_id,);
+
+                  service.updateGoods(this.editForm.uuid, fileFormData, success)
+
+        		});
       },
-      //新增
-      // addSubmit: function () {
-      // 	this.$refs.addForm.validate((valid) => {
-      // 		if (valid) {
-      // 			this.$confirm('确认提交吗？', '提示', {}).then(() => {
-      // 				this.addLoading = true;
-      // 				//NProgress.start();
-      // 				let para = Object.assign({}, this.addForm);
-      // 				para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-      // 				addUser(para).then((res) => {
-      // 					this.addLoading = false;
-      // 					//NProgress.done();
-      // 					this.$message({
-      // 						message: '提交成功',
-      // 						type: 'success'
-      // 					});
-      // 					this.$refs['addForm'].resetFields();
-      // 					this.addFormVisible = false;
-      // 					this.getUsers();
-      // 				});
-      // 			});
-      // 		}
-      // 	});
-      // },
       selsChange: function (sels) {
         this.sels = sels;
         // TODO 获取批量id

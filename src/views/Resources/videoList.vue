@@ -32,10 +32,10 @@
             </el-table-column>
             <el-table-column prop="file" label="文件路径" width="120" sortable>
             </el-table-column>
-            <el-table-column prop="create_time" label="创建时间" min-width="180" sortable>
+            <el-table-column prop="create_time" label="创建时间" min-width="180" :formatter="formatData" sortable>
             </el-table-column>
             <el-table-column label="操作" width="150">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <!--<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
                     <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                 </template>
@@ -48,34 +48,6 @@
             <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total" style="float:right;">
             </el-pagination>
         </el-col>
-        <!--&lt;!&ndash;编辑界面&ndash;&gt;-->
-        <!--<el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">-->
-            <!--<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="addForm">-->
-                <!--<el-form-item label="课程名称" prop="name">-->
-                    <!--<el-input v-model="editForm.name" auto-complete="off"></el-input>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="作者" prop="name">-->
-                    <!--<el-input v-model="editForm.creator" auto-complete="off"></el-input>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="作者头像">-->
-                    <!--<input type="file">-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="主图">-->
-                    <!--<input type="file">-->
-                <!--</el-form-item>-->
-
-                <!--<el-form-item label="备注说明" prop="detail">-->
-                    <!--<el-input v-model="editForm.detail" auto-complete="off"></el-input>-->
-                <!--</el-form-item>-->
-
-            <!--</el-form>-->
-
-            <!--<div slot="footer" class="dialog-footer">-->
-                <!--<el-button @click.native="editFormVisible = false">取消</el-button>-->
-                <!--<el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>-->
-            <!--</div>-->
-        <!--</el-dialog>-->
-
         <!--新增界面-->
         <el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
             <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
@@ -109,7 +81,7 @@
 </template>
 
 <script>
-    import util from '../../common/js/util'
+    import {formatDate} from '../../common/js/util'
     import service from '../../api/service.js'
     export default {
         data() {
@@ -165,6 +137,10 @@
             this.funcVideoList(1, 0);
         },
         methods: {
+            //时间显示转换
+            formatData: function (row, column) {
+                return formatDate(row.create_time, 'yyyy-MM-dd hh:mm')
+            },
             // 获取视频列表
             funcVideoList: function (page, name) {
                 let size = 10
@@ -239,45 +215,20 @@
                 fileFormData.append('creator_avator', creator_avator);
                 service.addCurriculum(fileFormData, success)
             },
-            //
-            // //性别显示转换
-            //
-
-            //获取用户列表
-            // getUsers() {
-            // 	let para = {
-            // 		page: this.page,
-            // 		name: this.filters.name
-            // 	};
-            // 	this.listLoading = true;
-            // 	//NProgress.start();
-            // 	getUserListPage(para).then((res) => {
-            // 		this.total = res.data.total;
-            // 		this.users = res.data.users;
-            // 		this.listLoading = false;
-            // 		//NProgress.done();
-            // 	});
-            // },
             //删除
             handleDel: function (index, row) {
-                // this.$confirm('确认删除该记录吗?', '提示', {
-                // 	type: 'warning'
-                // }).then(() => {
-                // 	this.listLoading = true;
-                // 	//NProgress.start();
-                // 	let para = { id: row.id };
-                // 	removeUser(para).then((res) => {
-                // 		this.listLoading = false;
-                // 		//NProgress.done();
-                // 		this.$message({
-                // 			message: '删除成功',
-                // 			type: 'success'
-                // 		});
-                // 		this.getUsers();
-                // 	});
-                // }).catch(() => {
-                //
-                // });
+                this.$confirm('确认删除该记录吗?', '提示', {
+                	type: 'warning'
+                }).then(() => {
+                	this.listLoading = true;
+                	//NProgress.start();
+                    const success = data => {
+                        this.listLoading = false;
+                    };
+                    service.deleteVideo(row.uuid, success)
+                }).catch(() => {
+
+                });
             },
             //显示编辑界面
             handleEdit: function (index, row) {
@@ -291,61 +242,17 @@
             },
             //编辑
             editSubmit: function () {
-                // TODO 编辑
-                // this.$refs.editForm.validate((valid) => {
-                // 	if (valid) {
-                // 		this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                // 			this.editLoading = true;
-                // 			//NProgress.start();
-                // 			let para = Object.assign({}, this.editForm);
-                // 			para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-                // 			editUser(para).then((res) => {
-                // 				this.editLoading = false;
-                // 				//NProgress.done();
-                // 				this.$message({
-                // 					message: '提交成功',
-                // 					type: 'success'
-                // 				});
-                // 				this.$refs['editForm'].resetFields();
-                // 				this.editFormVisible = false;
-                // 				this.getUsers();
-                // 			});
-                // 		});
-                // 	}
-                // });
+                // T去掉
+
             },
-            //新增
-            // addSubmit: function () {
-            // 	this.$refs.addForm.validate((valid) => {
-            // 		if (valid) {
-            // 			this.$confirm('确认提交吗？', '提示', {}).then(() => {
-            // 				this.addLoading = true;
-            // 				//NProgress.start();
-            // 				let para = Object.assign({}, this.addForm);
-            // 				para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-            // 				addUser(para).then((res) => {
-            // 					this.addLoading = false;
-            // 					//NProgress.done();
-            // 					this.$message({
-            // 						message: '提交成功',
-            // 						type: 'success'
-            // 					});
-            // 					this.$refs['addForm'].resetFields();
-            // 					this.addFormVisible = false;
-            // 					this.getUsers();
-            // 				});
-            // 			});
-            // 		}
-            // 	});
-            // },
             selsChange: function (sels) {
                 this.sels = sels;
-                // TODO 获取批量id
+                //  获取批量id
             },
-            //批量删除
+            //批量删除 不做
             batchRemove: function () {
                 var ids = this.sels.map(item => item.id).toString();
-                // TODO 批量删
+                // 批量删
                 this.$confirm('确认删除选中记录吗？', '提示', {
                     type: 'warning'
                 }).then(() => {

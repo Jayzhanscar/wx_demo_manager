@@ -36,7 +36,7 @@
 			<el-table-column prop="pic" label="图片地址" min-width="180" sortable>
 			</el-table-column>
 			<el-table-column label="操作" width="150">
-				<template scope="scope">
+				<template slot-scope="scope">
 					<!--<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
 				</template>
@@ -92,9 +92,9 @@
 		<!--新增界面-->
 		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
 			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="uuid" prop="">
-					<el-input v-model="addForm.uuid" auto-complete="off"></el-input>
-				</el-form-item>
+				<!--<el-form-item label="uuid" prop="">-->
+					<!--<el-input v-model="addForm.uuid" auto-complete="off"></el-input>-->
+				<!--</el-form-item>-->
 				<el-form-item label="标题" prop="name">
 					<el-input v-model="addForm.title" auto-complete="off"></el-input>
 				</el-form-item>

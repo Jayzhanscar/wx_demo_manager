@@ -74,6 +74,7 @@ import service from '../api/service.js'
               //NProgress.done();
               let { msg, code, user } = data;
               if (code !== 200) {
+
                 this.$message({
                   message: msg,
                   type: 'error'
