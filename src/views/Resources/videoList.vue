@@ -183,7 +183,11 @@
                 fileFormData.append('file', videoFile )
                 const success = data => {
                     this.listLoading = false;
-                    console.log('上传成功')
+                    this.funcVideoList(1, 0);
+                    this.$message({
+                        message: '上传成功',
+                        type: 'success'
+                    });
                 };
                 service.addVideo(fileFormData, success)
             },
@@ -204,6 +208,11 @@
                 const success = data => {
                     this.addFormVisible = false;
                     this.addFormVisible = false;
+                    this.funcVideoList(1, 0);
+                    this.$message({
+                        message: '创建成功',
+                        type: 'success'
+                    });
                 };
                 fileFormData.append('pic', curriculumPic,);
                 fileFormData.append('name', this.addForm.name,);
@@ -224,6 +233,11 @@
                 	//NProgress.start();
                     const success = data => {
                         this.listLoading = false;
+                        this.funcVideoList(1, 0);
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
                     };
                     service.deleteVideo(row.uuid, success)
                 }).catch(() => {

@@ -19,16 +19,19 @@ service.login = (data, success) => {
     method: 'post',
     data: data
   };
+  const failed = data =>{
+      alert(data)
+  }
   return api(config)
       .then((data) => {
         if (data.status === 200)
           success(data.data);
-        else
-          console.log(data.content)
-          this.$message({
-              massage: data,
-              type: 'error'
-          })
+        if (data.status === 403 )
+            failed(data.data)
+          // this.$message({
+          //     massage: data,
+          //     type: 'error'
+          // })
       })
       .catch()
 }
@@ -254,6 +257,21 @@ service.updateGoods = (guid, data, success) => {
 
 // -----------------------删除商品----------------------------------------------------
 
+service.deleteGoods = (guid, success) => {
+    let config = {
+        url: `${meta.api}/goods/api/operator/`+ guid,
+        method: 'delete',
+    }
+    return api(config)
+        .then((data) => {
+            if (data.status === 200)
+                success(data.data);
+            else
+                console.log(data)
+        })
+        .catch()
+
+}
 // ------------------------------------获取课程列表------------------------------------
 service.curriculumList = (data, success) => {
   let size = data['size']
@@ -500,7 +518,7 @@ service.updateAssemble = (auid, data, success ) => {
       .catch()
 }
 
-//---------------------------------删除拼团活动-------------------------------
+//-------------删除拼团活动----------------
 service.deleteAssemble = (auid, success ) => {
 
   let config = {
@@ -548,7 +566,7 @@ service.CreateCarDetail = (data, success) => {
         })
         .catch()
 }
-// ------------删除轮播图 ---------------
+// --------------删除轮播图 ---------------
 service.deleteCarDetail = (cuid, success) => {
     let config = {
         url: `${meta.api}/goods/api/carousel/delete/`+ cuid,
@@ -582,7 +600,7 @@ service.orderGoodsList = (data, success) => {
         })
         .catch()
 }
-// -------------------修改订单----------------
+// -------------------修改订单------------------
 service.modifyOrderGoods = (data, success) => {
     let config = {
         url: `${meta.api}/order/api/goods/modify/`,
@@ -618,4 +636,55 @@ service.orderCurrList = (data, success) => {
         })
         .catch()
 }
+
+// -------------后台用户评论管理---------------
+service.discussList = (data, success) => {
+    let size = data['size']
+    let page = data['page']
+    let config = {
+        url: `${meta.api}/goods/api/admin/discuss/list/`+'?size='+ size.toString()+ '&page=' + page,
+        method: 'get',
+    }
+    return api(config)
+        .then((data) => {
+            if (data.status === 200)
+                success(data.data);
+            else
+                console.log(data)
+        })
+        .catch()
+}
+
+// -------------后台删除评论列表-----------------
+service.discussDelete = (data, success) => {
+    let config = {
+        url: `${meta.api}/goods/api/admin/discuss/delete/`,
+        method: 'delete',
+        data: data,
+    }
+    return api(config)
+        .then((data) => {
+            if (data.status === 200)
+                success(data.data);
+            else
+                console.log(data)
+        })
+        .catch()
+}
+// ---------------获取后台销售数据----------------
+service.getSaleDate = (data, success) => {
+    let config = {
+        url: `${meta.api}/sale/api/sum/`,
+        method: 'get',
+    }
+    return api(config)
+        .then((data) => {
+            if (data.status === 200)
+                success(data.data);
+            else
+                console.log(data)
+        })
+        .catch()
+}
+
 export default service

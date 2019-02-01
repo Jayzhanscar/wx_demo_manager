@@ -26,9 +26,9 @@
 			</el-table-column>
 			<el-table-column prop="address" label="地址" width="160" sortable>
 			</el-table-column>
-			<el-table-column prop="create_time" label="注册时间" width="120" sortable>
+			<el-table-column prop="create_time" label="注册时间" width="160"  :formatter="create_time_formatData" sortable>
 			</el-table-column>
-			<el-table-column prop="last_login" label="最后登录时间" width="170" sortable>
+			<el-table-column prop="last_login" label="最后登录时间" width="170" :formatter="sformatData" sortable>
 			</el-table-column>
 			<el-table-column prop="u_type" label=类型 min-width="180" :formatter="formatUser" sortable>
 			</el-table-column>
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+	import {formatDate} from '../../common/js/util'
 	import service from '../../api/service.js'
 	export default {
 		data() {
@@ -72,7 +73,15 @@
 			},
 			// 用户类型转换
 			formatUser: function (row, column) {
-				return row.u_type == 0 ? '普通用户' : row.u_type == 1 ? '超级用户' : '未知';
+				return row.u_type == 0 ? '普通用户' : row.u_type == 1 ? '超级用户' : 'vip会员';
+			},
+			//时间显示转换
+			sformatData: function (row, column) {
+				return formatDate(row.last_login, 'yyyy-MM-dd hh:mm')
+			},
+			// 创建时间过滤器
+			create_time_formatData: function (row, column) {
+				return formatDate(row.create_time, 'yyyy-MM-dd hh:mm')
 			},
 			getUserList: function (page, mobile) {
 				let size = 10

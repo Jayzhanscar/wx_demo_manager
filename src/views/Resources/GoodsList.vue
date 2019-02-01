@@ -28,11 +28,21 @@
       </el-table-column>
       <el-table-column prop="salesnum" label="销量" width="100"  sortable>
       </el-table-column>
-      <el-table-column prop="pic" label="首图" width="130" sortable>
+      <!--<el-table-column prop="pic" label="首图" width="130" sortable>-->
+      <!--</el-table-column>-->
+      <el-table-column label="主图" width="150">
+        <template scope="scope">
+          <img :src=" 'https://www.ymkgdesign.com/'+ scope.row.pic" alt="" style="width: 300px;height:100px">
+        </template>
       </el-table-column>
       <el-table-column prop="classify.name" label="类别" width="120" sortable>
       </el-table-column>
-      <el-table-column prop="picdetail" label="详情图" width="120" sortable>
+      <!--<el-table-column prop="picdetail" label="详情图" width="120" sortable>-->
+      <!--</el-table-column>-->
+      <el-table-column label="详情图" width="150">
+        <template scope="scope">
+          <img :src=" 'https://www.ymkgdesign.com/'+ scope.row.picdetail" alt="" style="width: 300px;height:100px">
+        </template>
       </el-table-column>
       <el-table-column prop="create_time" label="创建时间" min-width="180" :formatter="formatData" sortable>
       </el-table-column>
@@ -165,20 +175,20 @@
 
         editFormVisible: false,//编辑界面是否显示
         editLoading: false,
-        editFormRules: {
-          name: [
-            { required: true, message: '此项必填', trigger: 'blur' },
-          ],
-
-        },
+        // editFormRules: {
+        //   name: [
+        //     { required: true, message: '此项必填', trigger: 'blur' },
+        //   ],
+        //
+        // },
 
         addFormVisible: false,//新增界面是否显示
         addLoading: false,
-        addFormRules: {
-          name: [
-            { required: true, message: '此项必填', trigger: 'blur' }
-          ]
-        },
+        // addFormRules: {
+        //   name: [
+        //     { required: true, message: '此项必填', trigger: 'blur' }
+        //   ]
+        // },
 
 
       }
@@ -220,6 +230,11 @@
         let picdetail = this.$refs.picDetail.files[0];
         const success = data => {
           this.addFormVisible = false;
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          });
+          this.funcGoodsList(1, 0);
         };
         fileFormData.append('pic', pic,);
         fileFormData.append('picdetail', picdetail, );
@@ -232,24 +247,24 @@
 
       //删除
       handleDel: function (index, row) {
-        // this.$confirm('确认删除该记录吗?', '提示', {
-        // 	type: 'warning'
-        // }).then(() => {
-        // 	this.listLoading = true;
-        // 	//NProgress.start();
-        // 	let para = { id: row.id };
-        // 	removeUser(para).then((res) => {
-        // 		this.listLoading = false;
-        // 		//NProgress.done();
-        // 		this.$message({
-        // 			message: '删除成功',
-        // 			type: 'success'
-        // 		});
-        // 		this.getUsers();
-        // 	});
-        // }).catch(() => {
-        //
-        // });
+        this.$confirm('确认删除该记录吗?', '提示', {
+        	type: 'warning'
+        }).then(() => {
+        	this.listLoading = true;
+        	//NProgress.start();
+        	const success = data => {
+              this.listLoading = false;
+              this.funcGoodsList(1, 0);
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+            }
+            service.deleteGoods( row.uuid, success)
+
+        }).catch(() => {
+
+        });
       },
       //显示编辑界面
       handleEdit: function (index, row) {
@@ -286,6 +301,11 @@
                   //NProgress.start();
                   const success = data => {
                     this.editLoading = false;
+                    this.funcGoodsList(1, 0);
+                    this.$message({
+                      message: '修改成功',
+                      type: 'success'
+                    });
                   };
                   let pic = this.$refs.updateGoodsPic.files[0];
                   let picdetail = this.$refs.updatePicDetail.files[0];

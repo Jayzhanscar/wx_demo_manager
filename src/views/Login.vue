@@ -1,6 +1,6 @@
 <template>
   <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
-    <h3 class="title">系统登录</h3>
+    <h3 class="title">一茗设计</h3>
     <el-form-item prop="account">
       <el-input type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
     </el-form-item>
@@ -22,8 +22,8 @@ import service from '../api/service.js'
       return {
         logining: false,
         ruleForm2: {
-          account: '18895309883',
-          checkPass: '123456'
+          account: '',
+          checkPass: ''
         },
         rules2: {
           account: [
@@ -61,35 +61,35 @@ import service from '../api/service.js'
       handleReset2() {
         this.$refs.ruleForm2.resetFields();
       },
-      handleSubmit2(ev) {
-        var _this = this;
-        this.$refs.ruleForm2.validate((valid) => {
-          if (valid) {
-            //_this.$router.replace('/table');
-            this.logining = true;
-            //NProgress.start();
-            var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-            requestLogin(loginParams).then(data => {
-              this.logining = false;
-              //NProgress.done();
-              let { msg, code, user } = data;
-              if (code !== 200) {
-
-                this.$message({
-                  message: msg,
-                  type: 'error'
-                });
-              } else {
-                sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({ path: '/table' });
-              }
-            });
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      }
+      // handleSubmit2(ev) {
+      //   var _this = this;
+      //   this.$refs.ruleForm2.validate((valid) => {
+      //     if (valid) {
+      //       //_this.$router.replace('/table');
+      //       this.logining = true;
+      //       //NProgress.start();
+      //       var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
+      //       requestLogin(loginParams).then(data => {
+      //         this.logining = false;
+      //         //NProgress.done();
+      //         let { msg, code, user } = data;
+      //         if (code !== 200) {
+      //
+      //           this.$message({
+      //             message: msg,
+      //             type: 'error'
+      //           });
+      //         } else {
+      //           sessionStorage.setItem('user', JSON.stringify(user));
+      //           this.$router.push({ path: '/table' });
+      //         }
+      //       });
+      //     } else {
+      //       console.log('error submit!!');
+      //       return false;
+      //     }
+      //   });
+      // }
     }
   }
 

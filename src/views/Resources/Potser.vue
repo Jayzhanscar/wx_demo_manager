@@ -29,11 +29,16 @@
 			</el-table-column>
 			<el-table-column prop="download" label="下载量" width="100" sortable>
 			</el-table-column>
-			<el-table-column prop="view" label="浏览量" width="120" sortable>
+			<el-table-column prop="view" label="浏览量" width="100" sortable>
 			</el-table-column>
-			<el-table-column prop="path" label="下载地址" width="120" sortable>
+			<el-table-column prop="path" label="下载地址" width="150" sortable>
 			</el-table-column>
-			<el-table-column prop="pic" label="图片地址" min-width="180" sortable>
+			<!--<el-table-column prop="pic" label="图片地址" min-width="180" sortable>-->
+			<!--</el-table-column>-->
+			<el-table-column label="主图" width="150">
+				<template scope="scope">
+					<img :src=" 'https://www.ymkgdesign.com/'+ scope.row.pic" alt="" style="width: 100px;height:50px">
+				</template>
 			</el-table-column>
 			<el-table-column label="操作" width="150">
 				<template slot-scope="scope">
@@ -66,9 +71,8 @@
 				</el-form-item>
 				<el-form-item label="作者头像">
 					<input type="file">
-
 				</el-form-item>
-				<el-form-item label="缩略图"  prop="name" id="uploadPic">
+				<el-form-item label="缩略图" prop="name" id="uploadPic">
 					<el-upload
 							class="upload-demo"
 							action="111"
@@ -77,9 +81,9 @@
 						<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
 					</el-upload>
 				</el-form-item>
-				<el-form-item label="备注说明" prop="detail">
-					<el-input v-model="editForm.detail" auto-complete="off"></el-input>
-				</el-form-item>
+				<!--<el-form-item label="备注说明" prop="detail">-->
+					<!--<el-input v-model="editaForm.detail" auto-complete="off"></el-input>-->
+				<!--</el-form-item>-->
 
 			</el-form>
 
@@ -120,9 +124,9 @@
 				<el-form-item label="缩略图">
 					<input ref="uploadPic" type="file" >
 				</el-form-item>
-				<el-form-item label="备注说明" prop="detail">
-					<el-input v-model="addForm.detail" auto-complete="off"></el-input>
-				</el-form-item>
+				<!--<el-form-item label="备注说明" prop="detail">-->
+					<!--<el-input v-model="addForm.detail" auto-complete="off"></el-input>-->
+				<!--</el-form-item>-->
 
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -217,8 +221,13 @@
 				let avatar = this.$refs.uploadAvatar.files[0]
 				let pic = this.$refs.uploadPic.files[0]
 				const success = data => {
-					this.addFormVisible = false;
-					console.log('创建成功了', data)
+					this.addFormVisible = false
+					this.$message({
+						message: '创建成功',
+						type: 'success'
+					});
+					this.getPostList(1, 0)
+
 
 				}
 				fileFormData.append('creator_pic', avatar,)
@@ -274,7 +283,11 @@
 					}
 					const success = data => {
 						this.listLoading = false;
-						console.log('删除成功了', data)
+						this.getPostList(1, 0);
+						this.$message({
+							message: '删除成功',
+							type: 'success'
+						});
 
 					}
 					service.deletePoster(data, success())
@@ -359,7 +372,11 @@
 					}
 					const success = data => {
 						this.listLoading = false;
-						console.log('删除成功了', data)
+						this.getPostList(1, 0);
+						this.$message({
+							message: '删除成功',
+							type: 'success'
+						});
 					}
 					service.deletePoster(data, success())
 

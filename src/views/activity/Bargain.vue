@@ -34,6 +34,11 @@
             </el-table-column>
             <el-table-column prop="end_time" label="结束时间" width="170"   :formatter="formatEndData" sortable>
             </el-table-column>
+            <el-table-column label="主图" width="150">
+                <template scope="scope">
+                    <img :src=" 'https://www.ymkgdesign.com/'+ scope.row.pic" alt="" style="width: 300px;height:100px">
+                </template>
+            </el-table-column>
             <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
                     <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -220,6 +225,11 @@
                 let pic = this.$refs.pic.files[0];
                 const success = data => {
                     this.addFormVisible = false;
+                    this.funcBargiansList(1, 0);
+                    this.$message({
+                        message: '创建成功',
+                        type: 'success'
+                    });
                 };
                 fileFormData.append('pic', pic,);
                 fileFormData.append('name', this.addForm.name,);
@@ -254,7 +264,11 @@
                 	// //NProgress.start();
                     const success= data => {
                         this.listLoading = false;
-                        console.log('已删除')
+                        this.funcBargiansList(1, 0);
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
                     }
                     service.deleteBargain(row.uuid, success)
 
@@ -286,6 +300,11 @@
                         console.log(data)
                         this.editLoading = false;
                         this.editFormVisible = false;
+                        this.funcBargiansList(1, 0);
+                        this.$message({
+                            message: '编辑成功',
+                            type: 'success'
+                        });
                     }
                     fileFormData.append('pic', pic,);
                     fileFormData.append('name', this.editForm.name,);

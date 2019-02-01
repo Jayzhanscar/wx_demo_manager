@@ -26,7 +26,12 @@
             </el-table-column>
             <el-table-column prop="creator" label="作者" width="100"  sortable>
             </el-table-column>
-            <el-table-column prop="pic" label="主图" width="100"  sortable>
+            <!--<el-table-column prop="pic" label="主图" width="100"  sortable>-->
+            <!--</el-table-column>-->
+            <el-table-column label="主图" width="150">
+                <template scope="scope">
+                    <img :src=" 'https://www.ymkgdesign.com/'+ scope.row.pic" alt="" style="width: 300px;height:100px">
+                </template>
             </el-table-column>
             <el-table-column prop="price" label="价格(元)" width="120" sortable>
             </el-table-column>
@@ -74,6 +79,7 @@
                     <template>
                         <el-radio v-model="editForm.ispay" label="0">免费</el-radio>
                         <el-radio v-model="editForm.ispay" label="1">付费</el-radio>
+                        <el-radio v-model="addForm.ispay" label=2>会员免费</el-radio>
                     </template>
                 </el-form-item>
 
@@ -106,6 +112,7 @@
                     <template>
                         <el-radio v-model="addForm.ispay" label="0">免费</el-radio>
                         <el-radio v-model="addForm.ispay" label="1">付费</el-radio>
+                        <el-radio v-model="addForm.ispay" label=2>会员免费</el-radio>
                     </template>
                 </el-form-item>
                 <el-form-item label="作者详情">
@@ -178,10 +185,9 @@
             this.funcCurriculumList(1, 0);
         },
         methods: {
-
-           //收费标砖显示转换
+           //收费标准显示转换
             formatPay: function (row, column) {
-            	return row.ispay == 1 ? '付费' : row.ispay == 0 ? '免费' : '未知';
+            	return row.ispay == 1 ? '付费' : row.ispay == 0 ? '免费' : row.ispay == 2 ? '会员免费': '未知';
             },
             // 获取课程列表
             funcCurriculumList: function (page, name) {
@@ -207,11 +213,15 @@
             // 创建课程
             createCurriculum: function() {
                 let fileFormData = new FormData();
-
                 let creator_avator = this.$refs.creator_avator.files[0];
                 let curriculumPic = this.$refs.curriculumPic.files[0];
                 const success = data => {
                     this.addFormVisible = false;
+                    this.funcCurriculumList(1, 0);
+                    this.$message({
+                        message: '创建成功',
+                        type: 'success'
+                    });
                 };
                 fileFormData.append('pic', curriculumPic,);
                 fileFormData.append('name', this.addForm.name,);
@@ -233,9 +243,13 @@
                     let data = {
                         'uuid': row.uuid
                     }
-                    console.log(row.uuid, '123456')
                     const success = data => {
-                          this.listLoading = false;
+                        this.listLoading = false;
+                        this.funcCurriculumList(1, 0);
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
                     }
                     service.deleteCurriculum(data, success)
 
@@ -271,6 +285,7 @@
                     const success = data => {
                         this.editLoading = false;
                         this.editFormVisible = false;
+                        this.funcCurriculumList(1, 0);
                     }
                     service.updateCurriculum( this.editForm.uuid, data, success)
                 });

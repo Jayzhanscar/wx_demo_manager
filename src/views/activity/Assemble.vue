@@ -26,7 +26,12 @@
             </el-table-column>
             <el-table-column prop="number" label="人数" width="100"  sortable>
             </el-table-column>
-            <el-table-column prop="pic" label="首图" width="100"  sortable>
+            <!--<el-table-column prop="pic" label="首图" width="100"  sortable>-->
+            <!--</el-table-column>-->
+            <el-table-column label="首图" width="150">
+                <template scope="scope">
+                    <img :src=" 'https://www.ymkgdesign.com/'+ scope.row.pic" alt="" style="width: 300px;height:100px">
+                </template>
             </el-table-column>
             <el-table-column prop="note" label="备注" width="130" so  rtable>
             </el-table-column>
@@ -36,7 +41,7 @@
             </el-table-column>
             <el-table-column prop="goods.price" label="原价" min-width="100" sortable>
             </el-table-column>
-            <el-table-column prop="end_time" label="截止日期" width="120"  sortable>
+            <el-table-column prop="end_time" label="截止日期" width="120" :formatter="startformatData" sortable>
             </el-table-column>
             <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
@@ -133,7 +138,6 @@
 </template>
 
 <script>
-    import util from '../../common/js/util'
     import {formatDate} from '../../common/js/util'
     import service from '../../api/service.js'
     export default {
@@ -221,6 +225,7 @@
                 	this.listLoading = true;
                 	let success= data => {
                         this.listLoading = false;
+                        this.funcAssembleList(1, 0);
                     }
                     service.deleteAssemble(row.uuid, success())
                 	//NProgress.start();
@@ -257,15 +262,19 @@
                 }
                 service.GoodsList(data, success)
             },
-            //编辑砍价
+            //编辑拼团
             editSubmit: function () {
                 this.$confirm('确认提交吗？', '提示', {}).then(() => {
                     this.editLoading = true;
                     let fileFormData = new FormData();
-
                     let pic = this.$refs.updatePic.files[0];
                     const success = data => {
                         this.editFormVisible = false;
+                        this.funcAssembleList(1, 0);
+                        this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
                     };
                     fileFormData.append('pic', pic,);
                     fileFormData.append('note', this.editForm.note, );
@@ -289,6 +298,11 @@
                             let pic = this.$refs.Pic.files[0];
                             const success = data => {
                                 this.addFormVisible = false;
+                                this.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                                this.funcAssembleList(1, 0);
                             };
                             fileFormData.append('pic', pic,);
                             fileFormData.append('note', this.addForm.note, );

@@ -14,6 +14,8 @@ import videoList from './views/Resources/videoList'
 import echarts from './views/charts/echarts.vue'
 import assemble from './views/activity/Assemble'
 import bargain from './views/activity/Bargain'
+import discuss from './views/users/discuss.vue'
+import manage from './views/charts/manage.vue'
 
 
 let routes = [
@@ -33,8 +35,18 @@ let routes = [
     {
         path: '/',
         component: Home,
+        name: '数据统计',
+        iconCls: 'fa fa-bar-chart',
+        children: [
+            // { path: '/echarts', component: echarts, name: 'echarts' }
+            {path: '/sale', component: manage, name: '销量统计'}
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
         name: '资源管理',
-        iconCls: 'el-icon-message',//图标样式class
+        iconCls: 'el-icon-menu',//图标样式class
         children: [
             // { path: '/main', component: Main, name: '海报管理', hidden: true },
             { path: '/carousel', component: carousel, name: '轮播图' },
@@ -72,18 +84,11 @@ let routes = [
         iconCls: 'fa fa-address-card',
         // leaf: true,//只有一个节点
         children: [
-            { path: '/userList', component: User, name: '用户列表' }
+            { path: '/userList', component: User, name: '用户列表' },
+            { path: '/user/discuss/list', component: discuss, name: '评论列表'}
         ]
     },
-    {
-        path: '/',
-        component: Home,
-        name: '数据分析',
-        iconCls: 'fa fa-bar-chart',
-        children: [
-            { path: '/echarts', component: echarts, name: 'echarts' }
-        ]
-    },
+
 
     // {
     //     path: '*',

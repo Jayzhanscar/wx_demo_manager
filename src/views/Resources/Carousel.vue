@@ -10,16 +10,19 @@
         </el-col>
 
         <!--列表-->
-        <el-table :data="CarouselList" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
+        <el-table :data="CarouselList" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%; padding: 30px 30px 30px 30px ">
             <el-table-column type="selection" width="55">
             </el-table-column>
             <el-table-column type="index" width="60">
             </el-table-column>
-            <el-table-column prop="pic" label="轮播图" width="200" sortable>
-            </el-table-column>
-            <el-table-column prop="type" label="类型" width="200"  :formatter="formatType" sortable>
-            </el-table-column>
+            <!--<el-table-column prop="pic" label="轮播图" width="200" sortable>-->
+            <!--</el-table-column>-->
             <el-table-column prop="name" label="商品名称" width="200"   sortable>
+            </el-table-column>
+            <el-table-column label="轮播图" width="150">
+                <template scope="scope">
+                    <img :src=" 'https://www.ymkgdesign.com/'+ scope.row.pic" alt="" style="width: 300px;height:100px">
+                </template>
             </el-table-column>
             <el-table-column label="操作" width="150">
                 <template scope="scope">
@@ -200,7 +203,11 @@
                     dataForm.append('pic', pic,)
                     const success = data => {
                         this.addFormVisible = false;
-                        alert('创建成功')
+                        this.getCarouselList();
+                        this.$message({
+                            message: '创建成功',
+                            type: 'success'
+                        });
 
                     }
                     service.CreateCarDetail(dataForm, success)
@@ -214,7 +221,11 @@
                     this.listLoading = true;
                     const success = data => {
                         this.listLoading = false
-                        console.log('删除成功', data)
+                        this.getCarouselList()
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
                     }
                     service.deleteCarDetail(row.id, success)
 
@@ -269,6 +280,10 @@
                     const success = data => {
                         this.editLoading = false;
                         this.editFormVisible = false;
+                        this.$message({
+                            message: '编辑成功',
+                            type: 'success'
+                        });
                     }
                     service.modifyClassify(data, success)
                 });

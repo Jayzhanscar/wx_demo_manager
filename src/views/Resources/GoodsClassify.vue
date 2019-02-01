@@ -131,7 +131,11 @@
 				}
 				const success = data => {
 					this.addFormVisible = false;
-					alert('创建成功')
+					this.getClassifyList();
+					this.$message({
+						message: '创建成功',
+						type: 'success'
+					});
 
 				}
 				service.CreateClassify(data, success)
@@ -147,7 +151,11 @@
 					};
 					const success = data => {
 						this.listLoading = false
-						console.log('删除成功', data)
+						this.getClassifyList();
+						this.$message({
+							message: '删除成功',
+							type: 'success'
+						});
 					}
 					service.deleteClassify(data, success)
 
@@ -177,6 +185,11 @@
 					const success = data => {
 						this.editLoading = false;
 						this.editFormVisible = false;
+						this.getClassifyList();
+						this.$message({
+							message: '修改成功',
+							type: 'success'
+						});
 					}
 					service.modifyClassify(data, success)
 				});

@@ -43,6 +43,8 @@
 			</el-table-column>
 			<el-table-column prop="address" label='具体地址' width="120" sortable>
 			</el-table-column>
+			<el-table-column prop="create_time" label='创建时间' width="150"  :formatter="formatData" sortable>
+			</el-table-column>
 			<el-table-column prop="express_company" label='快递公司' width="120" sortable>
 			</el-table-column>
 			<el-table-column prop="express_num" label='快递单号' width="120" sortable>
@@ -112,7 +114,7 @@
 </template>
 
 <script>
-	import util from '../../common/js/util'
+	import {formatDate} from '../../common/js/util'
 	import service from '../../api/service.js'
 
 	export default {
@@ -170,6 +172,10 @@
 			formatPay: function (row, column) {
 				return row.succeed == 1 ? '已付' : row.succeed == 0 ? '未付款' : '未知';
 			},
+			//时间显示转换
+			formatData: function (row, column) {
+				return formatDate(row.create_time, 'yyyy-MM-dd hh:mm')
+			},
 			// 获取商品订单列表
 			getOrderGoodsList: function (page, order_num) {
 				let data = {
@@ -186,18 +192,18 @@
 				}
 				service.orderGoodsList(data, success)
 			},
-			// 创建商品分类
-			createClassify: function (){
-				let data = {
-					name: this.addForm.name,
-				}
-				const success = data => {
-					this.addFormVisible = false;
-					alert('创建成功')
-
-				}
-				service.CreateClassify(data, success)
-			},
+			// // 创建商品分类
+			// createClassify: function (){
+			// 	let data = {
+			// 		name: this.addForm.name,
+			// 	}
+			// 	const success = data => {
+			// 		this.addFormVisible = false;
+			// 		alert('创建成功')
+			//
+			// 	}
+			// 	service.CreateClassify(data, success)
+			// },
 			//删除
 			handleDel: function (index, row) {
 				this.$confirm('确认删除该记录吗?', '提示', {

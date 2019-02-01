@@ -35,6 +35,8 @@
       </el-table-column>
       <el-table-column prop="succeed" label='是否支付' width="120" :formatter="formatPay" sortable>
       </el-table-column>
+      <el-table-column prop="create_time" label='创建时间' width="150" :formatter="formatData" sortable>
+      </el-table-column>
       <!--<el-table-column label="操作" width="250">-->
         <!--<template scope="scope">-->
           <!--&lt;!&ndash;<el-button size="small" @click="handleSee(scope.$index, scope.row)">查看</el-button>&ndash;&gt;-->
@@ -100,7 +102,7 @@
 </template>
 
 <script>
-  import util from '../../common/js/util'
+  import {formatDate} from '../../common/js/util'
   import service from '../../api/service.js'
 
   export default {
@@ -150,6 +152,10 @@
       this.getOrderCurrList(1,0);
     },
     methods: {
+      //时间显示转换
+      formatData: function (row, column) {
+        return formatDate(row.create_time, 'yyyy-MM-dd hh:mm')
+      },
       // 订单类型
       formatType: function (row, column) {
         return row.c_type == 1 ? '砍价课程' : row.c_type == 0 ? '普通课程' : '未知';
