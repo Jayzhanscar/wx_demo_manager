@@ -48,10 +48,6 @@
 							<!--</li>-->
 					</li>
 
-
-
-
-
 				</ul>
 			</aside>
 					<section class="content-container">
